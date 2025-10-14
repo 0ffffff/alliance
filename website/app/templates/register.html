@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Flask Auth App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                    <h2 class="card-title">Create Account</h2>
+                    <p class="text-muted">Join us and get started today!</p>
+                </div>
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Name Fields -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.first_name.label(class="form-label") }}
+                            {{ form.first_name(class="form-control") }}
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.first_name.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.last_name.label(class="form-label") }}
+                            {{ form.last_name(class="form-control") }}
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.last_name.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control") }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.username.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">This will be your unique username for login.</small>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.email.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+
+                    <!-- Password Fields -->
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control", id="password") }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Must be at least 6 characters long.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.password_confirm.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.password_confirm(class="form-control", id="passwordConfirm") }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm">
+                                <i class="fas fa-eye" id="eyeIconConfirm"></i>
+                            </button>
+                        </div>
+                        {% if form.password_confirm.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password_confirm.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid mb-3">
+                        {{ form.submit(class="btn btn-success btn-lg") }}
+                    </div>
+                </form>
+
+                <!-- Additional Links -->
+                <div class="text-center">
+                    <hr class="my-4">
+                    <p class="text-muted">Already have an account?</p>
+                    <a href="{{ url_for('main.login') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-sign-in-alt me-1"></i>Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility for password field
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    });
+
+    // Toggle password visibility for confirm password field
+    document.getElementById('togglePasswordConfirm').addEventListener('click', function() {
+        const passwordField = document.getElementById('passwordConfirm');
+        const eyeIcon = document.getElementById('eyeIconConfirm');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    });
+</script>
+{% endblock %}

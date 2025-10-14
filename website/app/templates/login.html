@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Flask Auth App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+                    <h2 class="card-title">Welcome Back!</h2>
+                    <p class="text-muted">Please sign in to your account</p>
+                </div>
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Username/Email Field -->
+                    <div class="mb-3">
+                        {{ form.username_or_email.label(class="form-label") }}
+                        {{ form.username_or_email(class="form-control form-control-lg") }}
+                        {% if form.username_or_email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.username_or_email.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control form-control-lg", id="password") }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Remember Me Checkbox -->
+                    <div class="mb-3 form-check">
+                        {{ form.remember_me(class="form-check-input") }}
+                        {{ form.remember_me.label(class="form-check-label") }}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid mb-3">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </form>
+
+                <!-- Additional Links -->
+                <div class="text-center">
+                    <hr class="my-4">
+                    <p class="text-muted">Don't have an account?</p>
+                    <a href="{{ url_for('main.register') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-user-plus me-1"></i>Create Account
+                    </a>
+                </div>
+
+                <!-- Demo Credentials -->
+                <div class="mt-4">
+                    <div class="alert alert-info">
+                        <small>
+                            <strong>Demo Account:</strong><br>
+                            Username: demo<br>
+                            Password: demo123
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    });
+</script>
+{% endblock %}

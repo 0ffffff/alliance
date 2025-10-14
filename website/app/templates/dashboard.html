@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Flask Auth App{% endblock %}
+
+{% block content %}
+<!-- Welcome Header -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Welcome, {{ user.get_full_name() }}!
+                        </h1>
+                        <p class="lead mb-0">
+                            Here's your personalized dashboard with account information and quick actions.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <i class="fas fa-user-circle fa-5x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-user fa-2x text-primary mb-2"></i>
+                <h5 class="card-title">Profile</h5>
+                <p class="card-text text-muted">{{ user.username }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-envelope fa-2x text-success mb-2"></i>
+                <h5 class="card-title">Email</h5>
+                <p class="card-text text-muted">{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-calendar-alt fa-2x text-info mb-2"></i>
+                <h5 class="card-title">Member Since</h5>
+                <p class="card-text text-muted">{{ user.created_at.strftime('%B %Y') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                <h5 class="card-title">Last Login</h5>
+                <p class="card-text text-muted">
+                    {% if user.last_login %}
+                        {{ user.last_login.strftime('%m/%d/%Y') }}
+                    {% else %}
+                        First time!
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <!-- Account Information -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Account Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <strong>Full Name:</strong>
+                        <p class="text-muted">{{ user.get_full_name() }}</p>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <strong>Username:</strong>
+                        <p class="text-muted">{{ user.username }}</p>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <strong>Email Address:</strong>
+                        <p class="text-muted">{{ user.email }}</p>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <strong>Account Status:</strong>
+                        <p class="text-muted">
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-12">
+                        <strong>Member Since:</strong>
+                        <p class="text-muted">{{ user.created_at.strftime('%A, %B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('main.profile') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-edit me-2"></i>Edit Profile
+                    </a>
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </button>
+                    <a href="{{ url_for('main.users') }}" class="btn btn-outline-info">
+                        <i class="fas fa-users me-2"></i>View All Users
+                    </a>
+                    <hr>
+                    <a href="{{ url_for('main.logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Activity
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-success"></div>
+                        <div class="timeline-content">
+                            <h6 class="mb-1">Account Created</h6>
+                            <p class="text-muted mb-0">
+                                You successfully created your account on {{ user.created_at.strftime('%B %d, %Y') }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {% if user.last_login %}
+                    <div class="timeline-item">
+                        <div class="timeline-marker bg-primary"></div>
+                        <div class="timeline-content">
+                            <h6 class="mb-1">Last Login</h6>
+                            <p class="text-muted mb-0">
+                                You last logged in on {{ user.last_login.strftime('%B %d, %Y at %I:%M %p') }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-key me-2"></i>Change Password
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">This feature is coming soon! For now, you can contact support to change your password.</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Coming Soon:</strong> Password change functionality will be available in the next update.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -35px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 3px #dee2e6;
+    }
+    
+    .timeline-item:before {
+        content: '';
+        position: absolute;
+        left: -30px;
+        top: 20px;
+        width: 2px;
+        height: calc(100% + 10px);
+        background-color: #dee2e6;
+    }
+    
+    .timeline-item:last-child:before {
+        display: none;
+    }
+</style>
+{% endblock %}

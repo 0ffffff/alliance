@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Flask Auth App{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="jumbotron bg-primary text-white rounded p-5 mb-5">
+            <div class="text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-shield-alt me-3"></i>
+                    Welcome to Flask Auth App
+                </h1>
+                <p class="lead mb-4">
+                    A secure, full-stack web application built with Python Flask featuring complete user authentication,
+                    session management, and modern responsive design.
+                </p>
+                
+                {% if not current_user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('main.register') }}" class="btn btn-light btn-lg me-md-2">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                </div>
+                {% else %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">
+            <i class="fas fa-star me-2"></i>Key Features
+        </h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-lock fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Secure Authentication</h5>
+                <p class="card-text">
+                    Advanced password hashing with Werkzeug security, CSRF protection, 
+                    and secure session management.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-users fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">User Management</h5>
+                <p class="card-text">
+                    Complete user registration, login, logout functionality with 
+                    form validation and error handling.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-mobile-alt fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Responsive Design</h5>
+                <p class="card-text">
+                    Modern, mobile-first design using Bootstrap 5 that works 
+                    perfectly on all devices and screen sizes.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technology Stack -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">
+            <i class="fas fa-cogs me-2"></i>Built With
+        </h2>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>Backend Technologies
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fab fa-python text-warning me-2"></i>
+                        <strong>Python Flask</strong> - Lightweight web framework
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-database text-info me-2"></i>
+                        <strong>SQLAlchemy</strong> - Database ORM
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-shield-alt text-success me-2"></i>
+                        <strong>Flask-Login</strong> - Session management
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-double text-primary me-2"></i>
+                        <strong>WTForms</strong> - Form validation
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-paint-brush me-2"></i>Frontend Technologies
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fab fa-html5 text-danger me-2"></i>
+                        <strong>HTML5</strong> - Semantic markup
+                    </li>
+                    <li class="mb-2">
+                        <i class="fab fa-css3-alt text-primary me-2"></i>
+                        <strong>CSS3</strong> - Modern styling
+                    </li>
+                    <li class="mb-2">
+                        <i class="fab fa-bootstrap text-purple me-2"></i>
+                        <strong>Bootstrap 5</strong> - Responsive framework
+                    </li>
+                    <li class="mb-2">
+                        <i class="fab fa-js-square text-warning me-2"></i>
+                        <strong>JavaScript</strong> - Interactive functionality
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+{% if current_user.is_authenticated %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <div class="text-center">
+                <h4>
+                    <i class="fas fa-user-check me-2"></i>
+                    Welcome back, {{ current_user.get_full_name() }}!
+                </h4>
+                <p class="mb-0">
+                    You joined us on {{ current_user.created_at.strftime('%B %d, %Y') }}.
+                    {% if current_user.last_login %}
+                        Last login: {{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
