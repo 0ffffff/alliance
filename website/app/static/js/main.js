@@ -1,324 +1,176 @@
-// Main JavaScript functionality for Flask Auth App
+// Page Navigation
+function showPage(pageId) {
+  // Hide all pages
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(page => page.classList.remove('active'));
+  
+  // Show selected page
+  const targetPage = document.getElementById(pageId);
+  if (targetPage) {
+    targetPage.classList.add('active');
+  }
+  
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
 
-document.addEventListener('DOMContentLoaded', function() {
+// Smooth scroll to features section
+function scrollToFeatures() {
+  const featuresSection = document.getElementById('features-section');
+  if (featuresSection) {
+    featuresSection.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Authentication Tab Switching
+function switchAuthTab(tab) {
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  
+  // Remove active class from all tabs
+  tabButtons.forEach(btn => btn.classList.remove('active'));
+  
+  if (tab === 'login') {
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+    tabButtons[0].classList.add('active');
+  } else if (tab === 'register') {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    tabButtons[1].classList.add('active');
+  }
+}
+
+// Handle Login
+function handleLogin(event) {
+  event.preventDefault();
+  
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  
+  // Simple validation
+  if (email && password) {
+    // Store user info in memory (not localStorage due to sandbox restrictions)
+    window.currentUser = {
+      name: 'William Li',
+      email: email
+    };
     
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+    // Navigate to dashboard
+    showPage('dashboard-page');
+    
+    // Update user name in dashboard
+    updateUserInfo();
+  } else {
+    alert('Please enter both email and password');
+  }
+}
+
+// Handle Registration
+function handleRegister(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('register-name').value;
+  const email = document.getElementById('register-email').value;
+  const password = document.getElementById('register-password').value;
+  const confirmPassword = document.getElementById('register-confirm').value;
+  
+  // Validate passwords match
+  if (password !== confirmPassword) {
+    alert('Passwords do not match!');
+    return;
+  }
+  
+  // Simple validation
+  if (name && email && password) {
+    // Store user info in memory
+    window.currentUser = {
+      name: name,
+      email: email
+    };
+    
+    // Navigate to dashboard
+    showPage('dashboard-page');
+    
+    // Update user name in dashboard
+    updateUserInfo();
+  } else {
+    alert('Please fill in all fields');
+  }
+}
+
+// Update user info in dashboard
+function updateUserInfo() {
+  if (window.currentUser) {
+    const userNameElements = document.querySelectorAll('#user-name, #profile-name');
+    userNameElements.forEach(el => {
+      if (el) el.textContent = window.currentUser.name;
     });
-
-    // Initialize popovers
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl);
-    });
-
-    // Auto-hide alerts after 5 seconds
-    setTimeout(function() {
-        var alerts = document.querySelectorAll('.alert-dismissible');
-        alerts.forEach(function(alert) {
-            if (alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }
-        });
-    }, 5000);
-
-    // Form validation enhancement
-    var forms = document.querySelectorAll('.needs-validation');
-    Array.prototype.slice.call(forms).forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-
-    // Password strength checker
-    var passwordField = document.getElementById('password');
-    if (passwordField) {
-        passwordField.addEventListener('input', function() {
-            checkPasswordStrength(this.value);
-        });
+    
+    const userEmailElement = document.getElementById('profile-email');
+    if (userEmailElement) {
+      userEmailElement.textContent = window.currentUser.email;
     }
+  }
+}
 
-    // Confirm password matching
-    var confirmPasswordField = document.getElementById('passwordConfirm');
-    if (confirmPasswordField && passwordField) {
-        confirmPasswordField.addEventListener('input', function() {
-            checkPasswordMatch(passwordField.value, this.value);
-        });
-    }
+// Handle Logout
+function handleLogout() {
+  // Clear user info
+  window.currentUser = null;
+  
+  // Navigate back to landing page
+  showPage('landing-page');
+  
+  // Reset forms
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  if (loginForm) loginForm.reset();
+  if (registerForm) registerForm.reset();
+}
 
-    // Loading states for forms
-    var submitButtons = document.querySelectorAll('form button[type="submit"]');
-    submitButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            var form = this.closest('form');
-            if (form.checkValidity()) {
-                showLoadingState(this);
-            }
-        });
-    });
+// Dashboard Tab Switching
+function switchDashboardTab(tab) {
+  // Hide all tab contents
+  const tabContents = document.querySelectorAll('.tab-content');
+  tabContents.forEach(content => content.classList.remove('active'));
+  
+  // Remove active class from all tabs
+  const tabButtons = document.querySelectorAll('.dashboard-tab');
+  tabButtons.forEach(btn => btn.classList.remove('active'));
+  
+  // Show selected tab content
+  const targetTab = document.getElementById(`${tab}-tab`);
+  if (targetTab) {
+    targetTab.classList.add('active');
+  }
+  
+  // Add active class to clicked tab button
+  const activeButton = Array.from(tabButtons).find(btn => 
+    btn.textContent.toLowerCase().includes(tab.replace('-', ' '))
+  );
+  if (activeButton) {
+    activeButton.classList.add('active');
+  }
+}
 
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Theme toggle functionality
-    var themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            toggleTheme();
-        });
-        
-        // Load saved theme
-        loadTheme();
-    }
+// Initialize carousel animation on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Set default page to landing
+  showPage('landing-page');
+  
+  // Initialize current user if needed
+  if (!window.currentUser) {
+    window.currentUser = null;
+  }
 });
 
-// Password strength checker function
-function checkPasswordStrength(password) {
-    var strength = 0;
-    var strengthIndicator = document.getElementById('password-strength');
-    var strengthText = document.getElementById('password-strength-text');
-    
-    if (!strengthIndicator) return;
-    
-    // Length check
-    if (password.length >= 8) strength += 1;
-    if (password.length >= 12) strength += 1;
-    
-    // Character variety checks
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
-    // Update strength indicator
-    strengthIndicator.className = 'password-strength';
-    if (strength < 3) {
-        strengthIndicator.classList.add('weak');
-        if (strengthText) strengthText.textContent = 'Weak';
-    } else if (strength < 5) {
-        strengthIndicator.classList.add('medium');
-        if (strengthText) strengthText.textContent = 'Medium';
-    } else {
-        strengthIndicator.classList.add('strong');
-        if (strengthText) strengthText.textContent = 'Strong';
-    }
-}
-
-// Password match checker
-function checkPasswordMatch(password, confirmPassword) {
-    var confirmField = document.getElementById('passwordConfirm');
-    var matchIndicator = document.getElementById('password-match');
-    
-    if (!confirmField) return;
-    
-    if (password === confirmPassword && password.length > 0) {
-        confirmField.classList.remove('is-invalid');
-        confirmField.classList.add('is-valid');
-        if (matchIndicator) {
-            matchIndicator.textContent = 'Passwords match';
-            matchIndicator.className = 'text-success small';
-        }
-    } else if (confirmPassword.length > 0) {
-        confirmField.classList.remove('is-valid');
-        confirmField.classList.add('is-invalid');
-        if (matchIndicator) {
-            matchIndicator.textContent = 'Passwords do not match';
-            matchIndicator.className = 'text-danger small';
-        }
-    } else {
-        confirmField.classList.remove('is-valid', 'is-invalid');
-        if (matchIndicator) {
-            matchIndicator.textContent = '';
-        }
-    }
-}
-
-// Show loading state for buttons
-function showLoadingState(button) {
-    var originalText = button.innerHTML;
-    var loadingText = button.getAttribute('data-loading-text') || 'Loading...';
-    
-    button.innerHTML = '<span class="loading-spinner me-2"></span>' + loadingText;
-    button.disabled = true;
-    
-    // Reset after 10 seconds (failsafe)
-    setTimeout(function() {
-        button.innerHTML = originalText;
-        button.disabled = false;
-    }, 10000);
-}
-
-// Theme toggle functionality
-function toggleTheme() {
-    var currentTheme = document.documentElement.getAttribute('data-theme');
-    var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // Update theme toggle button
-    var themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        var icon = themeToggle.querySelector('i');
-        if (icon) {
-            if (newTheme === 'dark') {
-                icon.className = 'fas fa-sun';
-            } else {
-                icon.className = 'fas fa-moon';
-            }
-        }
-    }
-}
-
-// Load saved theme
-function loadTheme() {
-    var savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    
-    var themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        var icon = themeToggle.querySelector('i');
-        if (icon) {
-            if (savedTheme === 'dark') {
-                icon.className = 'fas fa-sun';
-            } else {
-                icon.className = 'fas fa-moon';
-            }
-        }
-    }
-}
-
-// Utility functions
-function showNotification(message, type = 'info') {
-    var notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.top = '20px';
-    notification.style.right = '20px';
-    notification.style.zIndex = '9999';
-    notification.style.minWidth = '300px';
-    
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 5 seconds
-    setTimeout(function() {
-        if (notification.parentNode) {
-            var bsAlert = new bootstrap.Alert(notification);
-            bsAlert.close();
-        }
-    }, 5000);
-}
-
-// Copy to clipboard function
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        showNotification('Copied to clipboard!', 'success');
-    }).catch(function() {
-        // Fallback for older browsers
-        var textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showNotification('Copied to clipboard!', 'success');
-    });
-}
-
-// Form data serializer
-function serializeForm(form) {
-    var formData = new FormData(form);
-    var data = {};
-    
-    for (var pair of formData.entries()) {
-        data[pair[0]] = pair[1];
-    }
-    
-    return data;
-}
-
-// AJAX form submission helper
-function submitFormAjax(form, successCallback, errorCallback) {
-    var formData = new FormData(form);
-    var submitButton = form.querySelector('button[type="submit"]');
-    
-    if (submitButton) {
-        showLoadingState(submitButton);
-    }
-    
-    fetch(form.action, {
-        method: form.method || 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (successCallback) successCallback(data);
-        } else {
-            if (errorCallback) errorCallback(data);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        if (errorCallback) errorCallback({error: 'Network error occurred'});
-    })
-    .finally(() => {
-        if (submitButton) {
-            submitButton.innerHTML = submitButton.getAttribute('data-original-text') || 'Submit';
-            submitButton.disabled = false;
-        }
-    });
-}
-
-// Input validation helpers
-function validateEmail(email) {
-    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-function validatePassword(password) {
-    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
-    return re.test(password);
-}
-
-// Debounce function for search inputs
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function executedFunction() {
-        var context = this;
-        var args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-}
+// Prevent form submission defaults
+document.addEventListener('submit', function(event) {
+  // Let our custom handlers take care of forms
+  const forms = ['login-form', 'register-form'];
+  if (forms.includes(event.target.id)) {
+    event.preventDefault();
+  }
+});
